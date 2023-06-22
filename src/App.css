@@ -1,12 +1,16 @@
 .App {
   text-align: center;
+  color: aliceblue;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
-
+.card {
+  color: #61dafb;
+  font-size: larger;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
