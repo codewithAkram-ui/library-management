@@ -3,9 +3,6 @@ import {
   InputGroup,
   Input,
   Button,
-  InputGroupText,
-  Form,
-  Label,
   Spinner,
 } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -14,9 +11,7 @@ import BookCard from "../components/book_card.js";
 import Dropdown from "../components/dropdown.js";
 import {
   collection,
-  query,
-  where,
-  getDocs,
+   getDocs,
   orderBy,
   startAt,
   endAt,
@@ -73,17 +68,21 @@ const Home = () => {
   };
   // setResult(querySnapshot);
 
-  /* useEffect(() => {
+   useEffect(() => {
     let timer;
-    if (input.length > 0) {
+    if (input.length == 0){
+      setLoading(false);
+    }
+    else
+     {
       setLoading(true);
       timer = setTimeout(async () => {
-        await submitHandler(input);/*
-        setLoading(false);
-      }, 500);
+        await submitHandler(input);
+      setLoading(false)
+       }, 500);
     }
     return () => clearTimeout(timer);
-  }, [input]);*/
+  }, [input]);
   return (
     <div>
       <div
@@ -116,12 +115,12 @@ const Home = () => {
         </InputGroup>
       </div>
       {loading && (
-        <div style={{ margin: "1rem auto" }}>
+        <center style={{ margin: "auto" , padding: "5%"}}>
           <Spinner color="primary" />
-        </div>
+        </center>
       )}
       <div
-        style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
+        style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" , paddingTop: "2%"}}
       >
         {!loading &&
           result &&
