@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  InputGroup,
-  Input,
-  Button,
-  Spinner,
-  Label,
-  FormGroup,
-} from "reactstrap";
+import { InputGroup, Input, Button, Spinner } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import BookCard from "../components/book_card.js";
-import Dropdown from "../components/dropdown.js";
-import { ToastContainer, toast } from "react-toastify";
+import BookCard from "../components/BookCard.js";
+import Dropdown from "../components/Dropdown.js";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { auth, db } from "../firebase/firebase.js";
+import { db } from "../firebase/firebase.js";
+import { FilterCategory } from "../components/FilterCategory.js";
 const Search = () => {
   const [sortBy, setSortBy] = useState("bookName");
   const [books, setBooks] = useState([]);
@@ -24,6 +18,7 @@ const Search = () => {
   const [input, setInput] = useState("");
   const [result, setResult] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
+  const [initialLoading, setInitialLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const dropDownHandler = (dropdownValue) => {
     setSortBy(dropdownValue);
@@ -47,8 +42,10 @@ const Search = () => {
     setCheckedGenres(genreSet);
   };
 
+  //initial fetch
   useEffect(() => {
-    setLoading(true);
+    setInitialLoading(true);
+
     const q = query(collection(db, "Books"), orderBy("bookName"));
     getDocs(q)
       .then((snapshot) => {
@@ -76,9 +73,10 @@ const Search = () => {
         setGenres(genreData);
       })
       .finally(() => {
-        setLoading(false);
+        setInitialLoading(false);
       });
   }, []);
+  //sorting
   useEffect(() => {
     setLoading(true);
     const q = query(collection(db, "Books"), orderBy(sortBy));
@@ -102,7 +100,7 @@ const Search = () => {
         setLoading(false);
       });
   }, [sortBy]);
-
+  //filtering
   useEffect(() => {
     if (checkedAuthors.size == 0 && checkedGenres.size == 0) {
       setResult(books);
@@ -121,7 +119,7 @@ const Search = () => {
       setResult(filteredData);
     }
   }, [books, checkedAuthors, checkedGenres]);
-
+  //searching
   useEffect(() => {
     let res = [];
     result.forEach((book) => {
@@ -136,55 +134,20 @@ const Search = () => {
       <div className="filter-pane">
         <h3 className="red-text">Filters</h3>
         <div className="divider"></div>
-        <div className="filter-sub-pane">
-          <p style={{ fontWeight: "bold", marginBottom: "0.5rem" }}>
-            AUTHOR NAME
-          </p>
-          <div
-            className="scrollhost"
-            style={{ height: "18rem", overflowY: "scroll" }}
-          >
-            {loading && (
-              <center style={{ margin: "auto", padding: "5%" }}>
-                <Spinner />
-              </center>
-            )}
-            {authors.map((author) => (
-              <FormGroup check>
-                <Input
-                  type="checkbox"
-                  color="danger"
-                  checked={checkedAuthors.has(author)}
-                  onChange={() => authorCheckHandler(author)}
-                />
-                <Label check>{author}</Label>
-              </FormGroup>
-            ))}
-          </div>
-        </div>
-        <div className="filter-sub-pane">
-          <p style={{ fontWeight: "bold", marginBottom: "0.5rem" }}>GENRE</p>
-          <div
-            className="scrollhost"
-            style={{ height: "18rem", overflowY: "scroll" }}
-          >
-            {loading && (
-              <center style={{ margin: "auto", padding: "5%" }}>
-                <Spinner />
-              </center>
-            )}
-            {genres.map((genre) => (
-              <FormGroup check>
-                <Input
-                  type="checkbox"
-                  checked={checkedGenres.has(genre)}
-                  onChange={() => genreCheckHandler(genre)}
-                />
-                <Label check>{genre}</Label>
-              </FormGroup>
-            ))}
-          </div>
-        </div>
+        <FilterCategory
+          title="AUTHORS"
+          isLoading={initialLoading}
+          list={authors}
+          isCheckedSet={checkedAuthors}
+          onChangeHandler={authorCheckHandler}
+        />
+        <FilterCategory
+          title="GENRE"
+          isLoading={initialLoading}
+          list={genres}
+          isCheckedSet={checkedGenres}
+          onChangeHandler={genreCheckHandler}
+        />
       </div>
       <div className="search-main">
         <div className="search-input">
@@ -209,14 +172,16 @@ const Search = () => {
             <Dropdown handler={dropDownHandler} />
           </div>
         </div>
-        {loading && (
-          <center style={{ margin: "auto", padding: "5%" }}>
-            <Spinner />
-          </center>
-        )}
-
         <div className="search-results">
-          {!loading && searchResult.map((item) => <BookCard book={item} />)}
+          {loading ? (
+            <center style={{ margin: "auto", padding: "5%" }}>
+              <Spinner />
+            </center>
+          ) : searchResult.length > 0 ? (
+            searchResult.map((item) => <BookCard book={item} />)
+          ) : (
+            <p>Sorry, no books match your query {":("} </p>
+          )}
         </div>
       </div>
 

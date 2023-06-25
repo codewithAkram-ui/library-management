@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CartCard } from "../components/cart_card";
+import { CartCard } from "../components/CartCard";
 import {
   Button,
   Spinner,
@@ -11,7 +11,16 @@ import {
 
 import { emptyCart } from "../cart/cartSlice";
 import { auth, db } from "../firebase/firebase";
-import { collection, doc, getDoc, writeBatch } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+  where,
+  writeBatch,
+} from "firebase/firestore";
 import { toast } from "react-toastify";
 const Cart = (props) => {
   const cart = useSelector((state) => state.cart.value);
@@ -22,6 +31,22 @@ const Cart = (props) => {
     setLoading(true);
     try {
       let latestDocs = [];
+      let previouslyBorrowed = [];
+      const orderQuery = query(
+        collection(db, "Orders"),
+        where("user", "==", window.sessionStorage.getItem("email")),
+        orderBy("createdAt", "desc")
+      );
+      await getDocs(orderQuery).then((snapshot) => {
+        snapshot.forEach((doc) => {
+          previouslyBorrowed = [
+            ...previouslyBorrowed,
+            ...[...doc.data().books.map((book) => book.bookName)],
+          ];
+        });
+      });
+      console.log(previouslyBorrowed);
+
       for (var i = 0; i < cart.length; i++) {
         var snapshot = await getDoc(doc(db, "Books", cart[i].id));
         latestDocs.push(snapshot);
@@ -31,7 +56,14 @@ const Cart = (props) => {
           );
           return;
         }
+        if (previouslyBorrowed.includes(cart[i].bookName)) {
+          toast.error(
+            "You have already borrowed a copy of " + snapshot.data().bookName
+          );
+          return;
+        }
       }
+
       const batch = writeBatch(db);
       latestDocs.forEach(async (book) => {
         var docRef = doc(db, "Books", book.id);

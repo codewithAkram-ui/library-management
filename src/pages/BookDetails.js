@@ -11,6 +11,7 @@ import {
   UncontrolledTooltip,
 } from "reactstrap";
 import { toast } from "react-toastify";
+import { collection, query, where } from "firebase/firestore";
 function BookModal(props, args) {
   const [modal, setModal] = useState(false);
   const dispatch = useDispatch();
@@ -45,7 +46,7 @@ function BookModal(props, args) {
             <Button
               className="button"
               disabled={props.book.stock === 0}
-              onClick={() => {
+              onClick={async () => {
                 if (cart.includes(props.book)) {
                   toast.error(props.book.bookName + " is already in cart!");
                   toggle();

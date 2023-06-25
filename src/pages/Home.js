@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Spinner } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import BookCard from "../components/book_card.js";
+import BookCard from "../components/BookCard.js";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,10 +15,14 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase/firebase.js";
 const Home = () => {
+  //stores books
   const [books, setBooks] = useState([]);
+  //used for pagination
   const [lastItemOfPage, setLastItem] = useState("");
   const [hasMoreBool, setHasMore] = useState(true);
   const pageLimit = 4;
+
+  //fetching each page
   const paginatedFetch = async () => {
     const q = query(
       collection(db, "Books"),
@@ -26,6 +30,7 @@ const Home = () => {
       startAfter(lastItemOfPage),
       limit(pageLimit)
     );
+
     const querySnapshot = await getDocs(q);
     console.log("fetched " + lastItemOfPage);
     let data = [];
@@ -48,6 +53,8 @@ const Home = () => {
       console.log(books);
     }
   };
+
+  //initial fetch
   useEffect(() => {
     paginatedFetch();
   }, []);
@@ -56,7 +63,7 @@ const Home = () => {
       <InfiniteScroll
         dataLength={books.length}
         next={paginatedFetch}
-        hasMore={hasMoreBool} // Replace with a condition based on your data source
+        hasMore={hasMoreBool}
         loader={
           <center style={{ margin: "auto", padding: "5%" }}>
             <Spinner />
@@ -65,7 +72,7 @@ const Home = () => {
         endMessage={
           books.length && (
             <center style={{ margin: "10px" }}>
-              You have reached the end of our collection!!.
+              You have reached the end of our collection!
             </center>
           )
         }

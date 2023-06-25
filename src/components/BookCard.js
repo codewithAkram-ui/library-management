@@ -7,7 +7,7 @@ import {
   Badge,
 } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import BookModal from "../pages/book_details";
+import BookModal from "../pages/BookDetails";
 function BookCard(props) {
   return (
     <Card

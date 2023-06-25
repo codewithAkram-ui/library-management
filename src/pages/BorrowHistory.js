@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../firebase/firebase";
-import { Card, Row, Spinner } from "reactstrap";
+import { Spinner } from "reactstrap";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { BorrowedBookCard } from "../components/BorrowedBookCard";
 
@@ -34,43 +34,55 @@ export const BorrowHistory = () => {
   console.log(orders);
   return (
     <div>
-      <h2 style={{ padding: "20px" }}>Borrowed Books</h2>
+      <h2 style={{ paddingLeft: "20px", paddingTop: "20px" }}>
+        Borrowed Books
+      </h2>
       <div>
         {loading ? (
           <center style={{ margin: "auto", padding: "5%" }}>
             <Spinner />
           </center>
-        ) : (
-          orders && (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                paddingTop: "2%",
-              }}
-            >
-              {orders.map((order) => (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
+        ) : orders.length > 0 ? (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              paddingTop: "2%",
+            }}
+          >
+            {orders.map((order) => (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
 
-                    padding: "0.5rem",
+                  padding: "0.5rem",
+                }}
+              >
+                <h3
+                  style={{
+                    width: "15rem",
+                    margin: "16px 10px",
                   }}
                 >
-                  <h3 style={{ width: "15rem", margin: "16px 10px" }}>
-                    {order.createdAt.toDateString()}
-                  </h3>
-                  <div style={{ flex: 1, display: "flex", flexWrap: "wrap" }}>
-                    {order.books.map((book) => (
-                      <BorrowedBookCard item={book}></BorrowedBookCard>
-                    ))}
-                  </div>
+                  {order.createdAt.toDateString()}{" "}
+                  {order.createdAt.toLocaleTimeString([], {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
+                </h3>
+                <div style={{ flex: 1, display: "flex", flexWrap: "wrap" }}>
+                  {order.books.map((book) => (
+                    <BorrowedBookCard item={book}></BorrowedBookCard>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )
+              </div>
+            ))}
+          </div>
+        ) : (
+          <h3 style={{ padding: "20px" }}> No books borrowed yet.</h3>
         )}
       </div>
     </div>
