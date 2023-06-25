@@ -32,10 +32,10 @@ export const BorrowedBookCard = (props) => {
               {props.item.authorName}
             </CardSubtitle>
             <br></br>
-
+            {/* 
             <Button color="danger" onClick={() => {}}>
               aaa
-            </Button>
+            </Button> */}
           </Col>
 
           <img
