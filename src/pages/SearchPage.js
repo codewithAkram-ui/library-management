@@ -31,9 +31,9 @@ const Search = () => {
   const [input, setInput] = useState("");
   const [books, setBooks] = useState([]);
   const [authors, setAuthors] = useState([]);
-  const [authorCheckedState, setAuthorCheckedState] = useState([]);
-  const [genre, setGenres] = useState([]);
-  const [genreCheckedState, setGenreCheckedState] = useState([]);
+  const [checkedAuthors, setCheckedAuthors] = useState(new Set());
+  const [genres, setGenres] = useState([]);
+  const [checkedGenres, setCheckedGenres] = useState(new Set());
   const [filterBy, setFilter] = useState("Book Name");
   const [result, setResult] = useState([]);
   const [sortBy, setSortBy] = useState("bookName");
@@ -41,34 +41,23 @@ const Search = () => {
   const dropDownHandler = (dropdownValue) => {
     setFilter(dropdownValue);
   };
-  const authorCheckHandler = (checkName, position) => {
-    let res = [];
-    var authorSet = new Set();
-    var flag = false;
-    const updatedCheckedState = authorCheckedState.map((item, index) => {
-      return index === position ? !item : item;
-    });
-    setAuthorCheckedState(updatedCheckedState);
-
-    for (var i = 0; i < updatedCheckedState.length; i++) {
-      if (updatedCheckedState[i]) {
-        flag = true;
-        authorSet.add(authors[i]);
-      }
+  const authorCheckHandler = (checkedName) => {
+    let authorSet = new Set(checkedAuthors);
+    if (authorSet.has(checkedName)) {
+      authorSet.delete(checkedName);
+    } else {
+      authorSet.add(checkedName);
     }
-    if (!flag) {
-      setResult(books);
-      return;
+    setCheckedAuthors(authorSet);
+  };
+  const genreCheckHandler = (checkedGenre) => {
+    let genreSet = new Set(checkedGenres);
+    if (genreSet.has(checkedGenre)) {
+      genreSet.delete(checkedGenre);
+    } else {
+      genreSet.add(checkedGenre);
     }
-
-    books.forEach((book) => {
-      if (authorSet.has(book.authorName)) {
-        console.log(book.authorName);
-
-        res.push(book);
-      }
-    });
-    setResult(res);
+    setCheckedGenres(genreSet);
   };
 
   useEffect(() => {
@@ -79,9 +68,13 @@ const Search = () => {
       .then((snapshot) => {
         let data = [];
         let authorData = [];
+        let genreData = [];
         snapshot.forEach((doc) => {
           if (!authorData.includes(doc.data().authorName))
             authorData.push(doc.data().authorName);
+          doc.data().genre.forEach((g) => {
+            if (!genreData.includes(g)) genreData.push(g);
+          });
           data.push({
             id: doc.id,
             bookName: doc.data().bookName,
@@ -94,12 +87,31 @@ const Search = () => {
         });
         setBooks(data);
         setAuthors(authorData);
-        setAuthorCheckedState(Array(authorData.length).fill(false));
+        setGenres(genreData);
       })
       .finally(() => {
         setLoading(false);
       });
   }, [sortBy]);
+
+  useEffect(() => {
+    if (checkedAuthors.size == 0 && checkedGenres.size == 0) {
+      setResult(books);
+    } else {
+      let filteredData = books.filter((item) => {
+        if (checkedAuthors.has(item.authorName) && checkedGenres.size == 0)
+          return true;
+
+        if (checkedAuthors.size == 0 || checkedAuthors.has(item.authorName)) {
+          for (var i = 0; i < item.genreList.length; i++) {
+            if (checkedGenres.has(item.genreList[i])) return true;
+          }
+        }
+        return false;
+      });
+      setResult(filteredData);
+    }
+  }, [books, checkedAuthors, checkedGenres]);
 
   useEffect(() => {
     let res = [];
@@ -137,12 +149,12 @@ const Search = () => {
           className="scrollhost"
           style={{ height: "20rem", overflowY: "scroll" }}
         >
-          {authors.map((author, index) => (
+          {authors.map((author) => (
             <FormGroup check>
               <Input
                 type="checkbox"
-                checked={authorCheckedState[index]}
-                onChange={() => authorCheckHandler(author, index)}
+                checked={checkedAuthors.has(author)}
+                onChange={() => authorCheckHandler(author)}
               />
               <Label check>{author}</Label>
             </FormGroup>
@@ -155,14 +167,14 @@ const Search = () => {
           className="scrollhost"
           style={{ height: "20rem", overflowY: "scroll" }}
         >
-          {authors.map((author, index) => (
+          {genres.map((genre) => (
             <FormGroup check>
               <Input
                 type="checkbox"
-                checked={authorCheckedState[index]}
-                onChange={() => authorCheckHandler(author, index)}
+                checked={checkedGenres.has(genre)}
+                onChange={() => genreCheckHandler(genre)}
               />
-              <Label check>{author}</Label>
+              <Label check>{genre}</Label>
             </FormGroup>
           ))}
         </div>
