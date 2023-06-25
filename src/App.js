@@ -1,7 +1,7 @@
 import { Switch } from "react-router-dom/cjs/react-router-dom";
 import "./App.css";
 import Login from "./pages/Login";
-import Home from "./pages/Home";
+
 import { Route } from "react-router-dom/cjs/react-router-dom.min";
 import PrivateRoute from "./routes/PrivateRoute";
 import Layout from "./layout";

@@ -1,0 +1,45 @@
+.border-right-zero button {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+
+  border: 0;
+}
+* {
+  color: aliceblue;
+}
+.button {
+  border: 0;
+  background-color: #f03552;
+}
+.screen {
+  background-color: #24292f;
+}
+.login-bg {
+  background-color: #0d1117;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+body {
+  background-color: #24292f;
+}

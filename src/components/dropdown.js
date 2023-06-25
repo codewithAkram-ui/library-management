@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import {
-  Dropdown,
+  ButtonDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
 import PropTypes from "prop-types";
+import "./custom.css";
 
 function SearchByDropdown(props, { direction, ...args }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -18,8 +19,12 @@ function SearchByDropdown(props, { direction, ...args }) {
   };
 
   return (
-    <div className="d-flex" style={{ padding: "0rem" }}>
-      <Dropdown isOpen={dropdownOpen} toggle={toggle} direction={direction}>
+    <div className="d-flex border-right-zero" style={{ padding: "0rem" }}>
+      <ButtonDropdown
+        isOpen={dropdownOpen}
+        toggle={toggle}
+        direction={direction}
+      >
         <DropdownToggle caret>{dropdownValue}</DropdownToggle>
         <DropdownMenu {...args}>
           <DropdownItem onClick={() => changeValue("Book Name")}>
@@ -32,7 +37,7 @@ function SearchByDropdown(props, { direction, ...args }) {
             Author Name
           </DropdownItem>
         </DropdownMenu>
-      </Dropdown>
+      </ButtonDropdown>
     </div>
   );
 }

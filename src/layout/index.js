@@ -5,6 +5,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import Home from "../pages/Home";
 import Cart from "../pages/Cart";
 import { auth } from "../firebase/firebase";
+import Search from "../pages/SearchPage";
 
 const Layout = () => {
   const uid = window.sessionStorage.getItem("uid");
@@ -27,8 +28,8 @@ const Layout = () => {
     <div>
       <Header logoutHandler={logoutHandler} />
       <Switch>
-        <Route path="/cart">
-          <Cart />
+        <Route path="/search">
+          <Search />
         </Route>
         <Route path="/">
           <Home />

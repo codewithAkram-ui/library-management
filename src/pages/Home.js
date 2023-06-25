@@ -4,137 +4,110 @@ import {
   Input,
   Button,
   Spinner,
+  ButtonGroup,
+  Offcanvas,
+  OffcanvasBody,
+  OffcanvasHeader,
 } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import axios from "../axios.js";
 import BookCard from "../components/book_card.js";
+import InfiniteScroll from "react-infinite-scroll-component";
 import Dropdown from "../components/dropdown.js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
+  Firestore,
   collection,
-   getDocs,
+  getDocs,
+  limit,
   orderBy,
-  startAt,
-  endAt,
+  query,
+  startAfter,
 } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { db } from "../firebase/firebase.js";
 const Home = () => {
-  const [input, changeInput] = useState("");
-  const [result, setResult] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [filterBy, setFilter] = useState("Book Name");
-
-  const dropDownHandler = (dropdownValue) => {
-    setFilter(dropdownValue);
-  };
-
-  const submitHandler = async (data) => {
-    // const q = query(collection(db, "Books"), where("name", "<=", data + "z"));
-    const querySnapshot = await getDocs(
+  const [books, setBooks] = useState([]);
+  const [lastItemOfPage, setLastItem] = useState("");
+  const [hasMoreBool, setHasMore] = useState(true);
+  const pageLimit = 4;
+  const paginatedFetch = async () => {
+    const q = query(
       collection(db, "Books"),
       orderBy("bookName"),
-      startAt([data]),
-      endAt([data + "\uf8ff"])
+      startAfter(lastItemOfPage),
+      limit(pageLimit)
     );
-    let res = [];
-
+    const querySnapshot = await getDocs(q);
+    console.log("fetched " + lastItemOfPage);
+    let data = [];
     querySnapshot.forEach((doc) => {
-      let searchBy;
-      // doc.data() is never undefined for query doc snapshots
-      // console.log(doc.id, " => ", doc.data());
-      switch (filterBy) {
-        case "Book Name":
-          searchBy = [doc.data().bookName];
-          break;
-        case "Genre":
-          searchBy = doc.data().genre;
-          break;
-        case "Author Name":
-          searchBy = [doc.data().authorName];
-          break;
-      }
-      searchBy.map((x) => {
-        if (x.toLowerCase().startsWith(data.toLowerCase()) === true)
-          res.push({
-            id: doc.id,
-            name: doc.data().bookName,
-            genre: doc.data().genre,
-            author: doc.data().authorName,
-            imgUrl: doc.data().imgUrl,
-          });
+      data.push({
+        id: doc.id,
+        bookName: doc.data().bookName,
+        genreList: doc.data().genre,
+        authorName: doc.data().authorName,
+        imgUrl: doc.data().imgUrl,
+        description: doc.data().description,
+        stock: doc.data().stock,
       });
     });
-    console.log(res);
-    setResult(res);
+    if (data.length === 0 || data.length < pageLimit) {
+      setHasMore(false);
+    } else {
+      setLastItem(data[data.length - 1].bookName);
+      setBooks([...books, ...data]);
+      console.log(books);
+    }
   };
-  // setResult(querySnapshot);
-
-   useEffect(() => {
-    let timer;
-    if (input.length == 0){
-      setLoading(false);
-    }
-    else
-     {
-      setLoading(true);
-      timer = setTimeout(async () => {
-        await submitHandler(input);
-      setLoading(false)
-       }, 500);
-    }
-    return () => clearTimeout(timer);
-  }, [input]);
+  useEffect(() => {
+    paginatedFetch();
+  }, []);
   return (
     <div>
-      <div
-        style={{
-          paddingTop: "2rem",
-          width: "50%",
-          minWidth: "20rem",
-          margin: "auto",
-        }}
+      <InfiniteScroll
+        dataLength={books.length}
+        next={paginatedFetch}
+        hasMore={hasMoreBool} // Replace with a condition based on your data source
+        loader={
+          <center style={{ margin: "auto", padding: "5%" }}>
+            <Spinner />
+          </center>
+        }
+        endMessage={
+          books.length && (
+            <center style={{ margin: "10px" }}>
+              You have reached the end of our collection!!.
+            </center>
+          )
+        }
+        // refreshFunction={refresh}
+        // pullDownToRefresh
+        // pullDownToRefreshThreshold={50}
+        // pullDownToRefreshContent={
+        //   <h3 style={{ textAlign: "center" }}>&#8595; Pull down to refresh</h3>
+        // }
+        // releaseToRefreshContent={
+        //   <h3 style={{ textAlign: "center" }}>&#8593; Release to refresh</h3>
+        // }
       >
-        <InputGroup>
-          <Dropdown handler={dropDownHandler} />
-
-          <Input
-            placeholder={"Enter " + filterBy}
-            onChange={(e) => changeInput(e.target.value)}
-            value={input}
-            style={{
-              maxHeight: "3rem",
-              alignItems: "center",
-            }}
-          />
-          <Button
-            color="primary"
-            onClick={() => submitHandler(input)}
-            style={{ maxHeight: "3rem" }}
-          >
-            Search
-          </Button>
-        </InputGroup>
-      </div>
-      {loading && (
-        <center style={{ margin: "auto" , padding: "5%"}}>
-          <Spinner color="primary" />
-        </center>
-      )}
-      <div
-        style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" , paddingTop: "2%"}}
-      >
-        {!loading &&
-          result &&
-          result.map((book) => (
-            <BookCard
-              title={book.name}
-              author={book.author}
-              imgUrl={book.imgUrl}
-              genreList={book.genre}
-            />
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            paddingTop: "2%",
+          }}
+        >
+          {books.map((item) => (
+            <BookCard book={item} />
           ))}
+        </div>
+      </InfiniteScroll>
+      <div>
+        <ToastContainer theme="dark" />
       </div>
     </div>
   );
 };
-export const app = "lklk";
+
 export default Home;
