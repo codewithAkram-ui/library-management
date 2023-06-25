@@ -44,6 +44,7 @@ const Login = ({ isSignup }) => {
             // Signed in
             const user = userCredential.user;
             window.sessionStorage.setItem("uid", user.uid);
+            window.sessionStorage.setItem("email", user.email);
             history.push("/");
           })
           .catch((error) => {
@@ -58,6 +59,7 @@ const Login = ({ isSignup }) => {
             // Signed in
             const user = userCredential.user;
             window.sessionStorage.setItem("uid", user.uid);
+            window.sessionStorage.setItem("email", user.email);
             history.push("/");
           })
           .catch((error) => {
@@ -81,6 +83,7 @@ const Login = ({ isSignup }) => {
         console.log(result);
         const user = result.user;
         window.sessionStorage.setItem("uid", user.uid);
+        window.sessionStorage.setItem("email", user.email);
         history.push("/");
       })
       .catch((error) => {

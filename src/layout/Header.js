@@ -29,11 +29,7 @@ const Header = ({ logoutHandler }) => {
   const toggle = () => setIsOpen(!isOpen);
   return (
     <div>
-      <Navbar
-        expand="md"
-        dark={true}
-        style={{ height: "75px", backgroundColor: "#0D1117" }}
-      >
+      <Navbar expand="md" dark={true} style={{ backgroundColor: "#0D1117" }}>
         <NavbarBrand>
           <NavLink to="/">
             <img height={75} alt="BookShelf" src={logo} />
@@ -42,10 +38,15 @@ const Header = ({ logoutHandler }) => {
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ms-auto" fill navbar>
-            <NavItem style={{ marginTop: "4px", marginRight: "50px" }}>
+            <NavItem
+              style={{
+                margin: "10px 14px",
+              }}
+            >
               <NavLink
                 to="/search"
                 style={{
+                  margin: "10px 14px",
                   color: "white",
                   textDecoration: "none",
                   fontSize: "20px",
@@ -54,7 +55,27 @@ const Header = ({ logoutHandler }) => {
                 Search
               </NavLink>
             </NavItem>
-            <NavItem style={{ marginRight: "50px" }}>
+            <NavItem
+              style={{
+                margin: "10px 14px",
+              }}
+            >
+              <NavLink
+                to="/borrowHistory"
+                style={{
+                  color: "white",
+                  textDecoration: "none",
+                  fontSize: "20px",
+                }}
+              >
+                Borrow History
+              </NavLink>
+            </NavItem>
+            <NavItem
+              style={{
+                margin: "10px 14px",
+              }}
+            >
               <Button className="button" onClick={cartToggle}>
                 <FaShoppingCart color="black" />
                 {<Badge style={{ marginLeft: "10px" }}>{cartCount}</Badge>}
@@ -63,14 +84,15 @@ const Header = ({ logoutHandler }) => {
           </Nav>
 
           <Cart toggle={cartToggle} isOpen={modal} />
-
-          <Button
-            color="black"
-            style={{ backgroundColor: "white" }}
-            onClick={logoutHandler}
-          >
-            Logout
-          </Button>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              color="black"
+              style={{ backgroundColor: "white", margin: "10px 14px" }}
+              onClick={logoutHandler}
+            >
+              Logout
+            </Button>
+          </div>
         </Collapse>
       </Navbar>
     </div>

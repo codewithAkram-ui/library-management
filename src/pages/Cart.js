@@ -49,18 +49,11 @@ const Cart = (props) => {
 
       batch.set(doc(collection(db, "Orders")), {
         createdAt: Date.now(),
-        user: auth.currentUser.email,
+        user: window.sessionStorage.getItem("email"),
         books: borrowedBooks,
       });
       await batch.commit();
-      //  addDoc(collectionRef, {
-      //   bookName: "The Hobbit",
-      //   authorName: "J.R.R. Tolkien",
-      //   genre: ["Fiction", "Fantasy"],
-      //   yearOfPublishing: 1937,
-      //   stock: 12,
-      //   imgUrl: "https://cdn2.penguin.com.au/covers/original/9780141949055.jpg",
-      // });
+
       toast.success("Enjoy your books!");
       dispatch(emptyCart());
       props.toggle();

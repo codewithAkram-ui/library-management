@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {
-  InputGroup,
-  Input,
-  Button,
-  Spinner,
-  ButtonGroup,
-  Offcanvas,
-  OffcanvasBody,
-  OffcanvasHeader,
-} from "reactstrap";
+import { Spinner } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import BookCard from "../components/book_card.js";
 import InfiniteScroll from "react-infinite-scroll-component";
-import Dropdown from "../components/dropdown.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
-  Firestore,
   collection,
   getDocs,
   limit,
@@ -80,15 +69,6 @@ const Home = () => {
             </center>
           )
         }
-        // refreshFunction={refresh}
-        // pullDownToRefresh
-        // pullDownToRefreshThreshold={50}
-        // pullDownToRefreshContent={
-        //   <h3 style={{ textAlign: "center" }}>&#8595; Pull down to refresh</h3>
-        // }
-        // releaseToRefreshContent={
-        //   <h3 style={{ textAlign: "center" }}>&#8593; Release to refresh</h3>
-        // }
       >
         <div
           style={{
@@ -104,7 +84,7 @@ const Home = () => {
         </div>
       </InfiniteScroll>
       <div>
-        <ToastContainer theme="dark" />
+        <ToastContainer theme="dark" autoClose={2000} />
       </div>
     </div>
   );

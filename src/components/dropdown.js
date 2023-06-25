@@ -10,35 +10,50 @@ import "./custom.css";
 
 function SearchByDropdown(props, { direction, ...args }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [dropdownValue, setValue] = useState("Book Name");
+  const [dropdownValue, setValue] = useState("Sort by Book Name");
   const toggle = () => setDropdownOpen((prevState) => !prevState);
 
   const changeValue = (value) => {
-    props.handler(value);
-    setValue(value);
+    switch (value) {
+      case "Book Name":
+        props.handler("bookName");
+        break;
+      case "Author Name":
+        props.handler("authorName");
+        break;
+      case "Year of Publishing":
+        props.handler("yearOfPublishing");
+        break;
+      case "Availability":
+        props.handler("stock");
+        break;
+    }
+    setValue("Sort by " + value);
   };
 
   return (
-    <div className="d-flex border-right-zero" style={{ padding: "0rem" }}>
-      <ButtonDropdown
-        isOpen={dropdownOpen}
-        toggle={toggle}
-        direction={direction}
-      >
-        <DropdownToggle caret>{dropdownValue}</DropdownToggle>
-        <DropdownMenu {...args}>
-          <DropdownItem onClick={() => changeValue("Book Name")}>
-            Book Name
-          </DropdownItem>
-          <DropdownItem onClick={() => changeValue("Genre")}>
-            Genre
-          </DropdownItem>
-          <DropdownItem onClick={() => changeValue("Author Name")}>
-            Author Name
-          </DropdownItem>
-        </DropdownMenu>
-      </ButtonDropdown>
-    </div>
+    <ButtonDropdown
+      style={{ marginLeft: "10px" }}
+      isOpen={dropdownOpen}
+      toggle={toggle}
+      direction={direction}
+    >
+      <DropdownToggle caret>{dropdownValue}</DropdownToggle>
+      <DropdownMenu {...args}>
+        <DropdownItem onClick={() => changeValue("Book Name")}>
+          Book Name
+        </DropdownItem>
+        <DropdownItem onClick={() => changeValue("Author Name")}>
+          Author Name
+        </DropdownItem>
+        <DropdownItem onClick={() => changeValue("Year of Publishing")}>
+          Year of Publishing
+        </DropdownItem>
+        <DropdownItem onClick={() => changeValue("Availability")}>
+          Availability
+        </DropdownItem>
+      </DropdownMenu>
+    </ButtonDropdown>
   );
 }
 

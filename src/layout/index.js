@@ -3,9 +3,9 @@ import Header from "./Header";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import Home from "../pages/Home";
-import Cart from "../pages/Cart";
 import { auth } from "../firebase/firebase";
 import Search from "../pages/SearchPage";
+import { BorrowHistory } from "../pages/BorrowHistory";
 
 const Layout = () => {
   const uid = window.sessionStorage.getItem("uid");
@@ -30,6 +30,9 @@ const Layout = () => {
       <Switch>
         <Route path="/search">
           <Search />
+        </Route>
+        <Route path="/borrowHistory">
+          <BorrowHistory />
         </Route>
         <Route path="/">
           <Home />

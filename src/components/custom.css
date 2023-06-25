@@ -1,23 +1,6 @@
-.border-right-zero button {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-
-  border: 0;
-}
-* {
-  color: aliceblue;
-}
-.button {
-  border: 0;
-  background-color: #f03552;
-}
-.screen {
+body {
   background-color: #24292f;
 }
-.login-bg {
-  background-color: #0d1117;
-}
-
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -40,6 +23,63 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
-body {
+.filter-pane {
+  width: 15rem;
+  padding: 1rem 0rem 1rem 1rem;
   background-color: #24292f;
+  margin: 0.5rem;
+  position: sticky;
+  top: 0;
+  height: fit-content;
+}
+.divider {
+  height: 1px;
+  background: white;
+  width: 90%;
+  margin-bottom: 0.5rem;
+}
+.border-right-zero button {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+
+  border: 0;
+}
+.filter-sub-pane {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-right: 0.25rem;
+}
+.search-main {
+  flex: 1;
+  background-color: #24292f;
+  margin: 0.5rem 0rem 0.5rem 0.5rem;
+}
+.search-input {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 50%;
+  min-width: 20rem;
+  margin: auto;
+}
+.search-results {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  padding-top: 2%;
+}
+* {
+  color: aliceblue;
+}
+.button {
+  border: 0;
+  background-color: #f03552;
+}
+.screen {
+  background-color: #24292f;
+}
+.login-bg {
+  background-color: #0d1117;
+}
+.red-text {
+  color: #f03552;
 }
