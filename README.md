@@ -10,7 +10,9 @@
   * Only one copy of a book can be rented at a time.
   * Advanced search featuring sorting, filtering and searching.
   * Ability to view borrowed books and checkout history.
-
+## Disclaimer
+  * Advanced search was not done with infinite scroll pagination as it is not possible to search for books when data is loaded dynamically.
+    
 Check out the site [here](https://miniproject-e38a4.web.app/login) yourself :P
   
 
