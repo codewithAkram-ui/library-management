@@ -2,7 +2,8 @@
 
 ## Features
 
-  * Web Application built on the combination of React, Firebase Firestore API, and Firebase Authentication API, hosted on Firebase. 
+  * Web Application built on the combination of React, Firebase Firestore API, and Firebase Authentication API, hosted on Firebase.
+  * Login using email and password or google sign in.
   * Session maintained throughout application.
   * Home page displaying books using pagination.
   * Cart implemented using redux.
